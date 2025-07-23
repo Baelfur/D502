@@ -1,22 +1,25 @@
 Table observability {
-  asset_id        serial [pk]
-  ip_address      text [not null]
-  hostname        text [not null]
-  device_status   text
-  region          text
+  asset_id           serial [pk]
+  obs_ip_address     text [not null]
+  obs_hostname       text [not null]
+  obs_status         text
+  -- removed obs_region
 }
 
 Table inventory {
-  ip_address      text [pk]
-  hostname        text
-  vendor          text
-  model           text
+  inv_ip_address     text [pk]
+  inv_hostname       text
+  inv_vendor         text
+  inv_model          text
 }
 
 Table ipam {
-  ip_address      text [pk]
-  region          text
+  ipam_ip_address    text [pk]
+  ipam_region        text
 }
 
-Ref: inventory.ip_address > observability.ip_address
-Ref: ipam.ip_address > observability.ip_address
+Table labels {
+  asset_id           int [pk, ref: > observability.asset_id]
+  is_in_inventory    boolean
+  is_in_ipam         boolean
+}
