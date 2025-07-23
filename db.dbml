@@ -1,0 +1,22 @@
+Table observability {
+  asset_id        serial [pk]
+  ip_address      text [not null]
+  hostname        text [not null]
+  device_status   text
+  region          text
+}
+
+Table inventory {
+  ip_address      text [pk]
+  hostname        text
+  vendor          text
+  model           text
+}
+
+Table ipam {
+  ip_address      text [pk]
+  region          text
+}
+
+Ref: inventory.ip_address > observability.ip_address
+Ref: ipam.ip_address > observability.ip_address
