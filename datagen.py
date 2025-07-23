@@ -2,14 +2,22 @@ import random
 import pandas as pd
 from faker import Faker
 import ipaddress
+import logging
+import time
 
-# Initialize Faker
+# --- Logging Setup ---
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    datefmt='%H:%M:%S'
+)
+
+# --- Initialization ---
 fake = Faker()
-
-# Configuration
 NUM_ASSETS = 10_000
 
-# Weighted vendor-model distribution
+# --- Configuration ---
+
 VENDOR_MODEL_WEIGHTED = {
     "Cisco": [("ISR4431", 0.7), ("NCS540", 0.3)],
     "Juniper": [("MX204", 0.9), ("QFX5120", 0.1)],
@@ -19,7 +27,6 @@ VENDOR_MODEL_WEIGHTED = {
     "RAD": [("ETX-2", 1.0)]
 }
 
-# Region weights and mappings
 REGION_WEIGHTS = {
     "central": 0.1,
     "east": 0.1,
@@ -66,12 +73,12 @@ OBS_STATUS_WEIGHTED = [
     ("retired", 0.03)
 ]
 
-# Weighted choice utility
+# --- Utilities ---
+
 def weighted_choice(choices):
     values, weights = zip(*choices)
     return random.choices(values, weights=weights, k=1)[0]
 
-# Generate hostname with fixed length and uppercase formatting
 def generate_hostname(region: str) -> str:
     site_code = random.choice(REGION_SITE_MAP[region])
     role_name = random.choice(list(DEVICE_ROLE_CODES.keys()))
@@ -79,21 +86,20 @@ def generate_hostname(region: str) -> str:
     num = str(random.randint(1, 99)).zfill(2)
     return f"{site_code}{role_code}{num}"
 
-# Generate private IP in region-specific subnet
 def generate_private_ip(region: str) -> str:
     subnet = ipaddress.IPv4Network(REGION_SUBNET_MAP[region])
     return str(random.choice(list(subnet.hosts())))
 
+# --- Deduplication State ---
 seen_ips = set()
 seen_hostnames = set()
 
-# Generate a unique asset row
 def generate_unique_asset_row():
     while True:
         region = random.choices(list(REGION_WEIGHTS.keys()), weights=REGION_WEIGHTS.values(), k=1)[0]
         hostname = generate_hostname(region)
         ip_address = generate_private_ip(region)
-        
+
         if hostname in seen_hostnames or ip_address in seen_ips:
             continue
 
@@ -104,7 +110,7 @@ def generate_unique_asset_row():
         status = weighted_choice(OBS_STATUS_WEIGHTED)
         vendor = random.choice(list(VENDOR_MODEL_WEIGHTED.keys()))
         model = weighted_choice(VENDOR_MODEL_WEIGHTED[vendor])
-        
+
         return {
             "ip_address": ip_address,
             "hostname": hostname,
@@ -114,6 +120,20 @@ def generate_unique_asset_row():
             "vendor": vendor,
             "model": model
         }
-# Generate full dataset
-df = pd.DataFrame(generate_unique_asset_row() for _ in range(NUM_ASSETS))
+
+# --- Data Generation ---
+start_time = time.time()
+
+rows = []
+for i in range(NUM_ASSETS):
+    rows.append(generate_unique_asset_row())
+    if (i + 1) % 1000 == 0:
+        logging.info(f"{i + 1} assets generated...")
+
+df = pd.DataFrame(rows)
+
+elapsed = time.time() - start_time
+logging.info(f"✅ Completed generation of {NUM_ASSETS} assets in {elapsed:.2f} seconds")
+
 df.to_csv("base_asset_dataset.csv", index=False)
+logging.info("📁 Saved to base_asset_dataset.csv")
