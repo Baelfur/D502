@@ -7,23 +7,23 @@ OUTPUT_FILE = "labeled_asset_dataset.csv"
 # Failure probabilities
 IPAM_REGION_FAILURE_PROBS = {
     "northeast": 0.3,
-    "northwest": 0.3,
-    "central": 0.1,
-    "east": 0.1,
+    "northwest": 0.01,
+    "central": 0.01,
+    "east": 0.02,
     "west": 0.05,
-    "southeast": 0.05,
-    "southwest": 0.05
+    "southeast": 0.03,
+    "southwest": 0.01
 }
 
 INVENTORY_MODEL_FAILURE_PROBS = {
-    "MX204": 0.4,
-    "QFX5120": 0.4,
-    "ISR4431": 0.15,
-    "NCS540": 0.15,
-    "7280R": 0.05,
-    "7750 SR-1": 0.1,
-    "FSP150": 0.05,
-    "FSP3000": 0.05,
+    "MX204": 0.01,
+    "QFX5120": 0.03,
+    "ISR4431": 0.02,
+    "NCS540": 0.7,
+    "7280R": 0.01,
+    "7750 SR-1": 0.01,
+    "FSP150": 0.40,
+    "FSP3000": 0.25,
     "ETX-2": 0.05
 }
 
