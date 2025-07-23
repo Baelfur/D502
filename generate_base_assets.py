@@ -18,13 +18,49 @@ NUM_ASSETS = 10_000
 
 # --- Configuration ---
 
-VENDOR_MODEL_WEIGHTED = {
-    "Cisco": [("ISR4431", 0.7), ("NCS540", 0.3)],
-    "Juniper": [("MX204", 0.9), ("QFX5120", 0.1)],
-    "Arista": [("7280R", 1.0)],
-    "Nokia": [("7750 SR-1", 1.0)],
-    "ADVA": [("FSP150", 0.5), ("FSP3000", 0.5)],
-    "RAD": [("ETX-2", 1.0)]
+ROLE_WEIGHTS = {
+    "edge": 0.30,
+    "dist": 0.25,
+    "sw":   0.20,
+    "rtr":  0.10,
+    "agg":  0.10,
+    "core": 0.05
+}
+
+DEVICE_ROLE_CODES = {
+    "edge": "ED",
+    "core": "CO",
+    "agg":  "AG",
+    "dist": "DS",
+    "rtr":  "RT",
+    "sw":   "SW"
+}
+
+ROLE_VENDOR_MODEL_MAP = {
+    "edge": [
+        ("Cisco", "ISR4431"),
+        ("Juniper", "SRX345"),
+        ("RAD", "ETX-2")
+    ],
+    "core": [
+        ("Juniper", "MX204"),
+        ("Cisco", "NCS540"),
+        ("Nokia", "7750 SR-1")
+    ],
+    "agg": [
+        ("Arista", "7280R"),
+        ("ADVA", "FSP3000")
+    ],
+    "dist": [
+        ("ADVA", "FSP150"),
+        ("Juniper", "QFX5120")
+    ],
+    "rtr": [
+        ("Arista", "7050X3")
+    ],
+    "sw": [
+        ("Cisco", "Catalyst9300")
+    ]
 }
 
 REGION_WEIGHTS = {
@@ -67,15 +103,6 @@ REGION_SUBNET_MAP = {
     "northwest":  "10.70.0.0/16"
 }
 
-DEVICE_ROLE_CODES = {
-    "edge": "ED",
-    "core": "CO",
-    "agg":  "AG",
-    "dist": "DS",
-    "rtr":  "RT",
-    "sw":   "SW"
-}
-
 OBS_STATUS_WEIGHTED = [
     ("active", 0.7),
     ("degraded", 0.2),
@@ -85,15 +112,18 @@ OBS_STATUS_WEIGHTED = [
 
 # --- Utilities ---
 
-def weighted_choice(choices):
+def weighted_choice(choices_dict):
+    values, weights = zip(*choices_dict.items())
+    return random.choices(values, weights=weights, k=1)[0]
+
+def weighted_tuple_choice(choices):
     values, weights = zip(*choices)
     return random.choices(values, weights=weights, k=1)[0]
 
-def generate_hostname(region: str) -> str:
+def generate_hostname(region: str, role: str) -> str:
     site_code = random.choice(REGION_SITE_MAP[region])
     state_code = SITE_STATE_MAP[site_code]
-    role_name = random.choice(list(DEVICE_ROLE_CODES.keys()))
-    role_code = DEVICE_ROLE_CODES[role_name]
+    role_code = DEVICE_ROLE_CODES[role]
     num = str(random.randint(1, 99)).zfill(2)
     return f"{site_code}{state_code}{role_code}{num}"
 
@@ -107,8 +137,9 @@ seen_hostnames = set()
 
 def generate_unique_asset_row():
     while True:
-        region = random.choices(list(REGION_WEIGHTS.keys()), weights=REGION_WEIGHTS.values(), k=1)[0]
-        hostname = generate_hostname(region)
+        region = weighted_choice(REGION_WEIGHTS)
+        role = weighted_choice(ROLE_WEIGHTS)
+        hostname = generate_hostname(region, role)
         ip_address = generate_private_ip(region)
 
         if hostname in seen_hostnames or ip_address in seen_ips:
@@ -118,9 +149,9 @@ def generate_unique_asset_row():
         seen_ips.add(ip_address)
 
         fqdn = f"{hostname}.{region}.lightspeed.net"
-        status = weighted_choice(OBS_STATUS_WEIGHTED)
-        vendor = random.choice(list(VENDOR_MODEL_WEIGHTED.keys()))
-        model = weighted_choice(VENDOR_MODEL_WEIGHTED[vendor])
+        status = weighted_choice(dict(OBS_STATUS_WEIGHTED))
+
+        vendor, model = random.choice(ROLE_VENDOR_MODEL_MAP[role])
 
         return {
             "ip_address": ip_address,
@@ -129,7 +160,8 @@ def generate_unique_asset_row():
             "region": region,
             "status": status,
             "vendor": vendor,
-            "model": model
+            "model": model,
+            "role": role
         }
 
 # --- Data Generation ---
