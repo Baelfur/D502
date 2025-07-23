@@ -11,7 +11,6 @@ Table inventory {
   inv_hostname       text [not null]
   inv_vendor         text [not null]
   inv_model          text [not null]
-  inv_role            text [not null]
 }
 
 Table ipam {
