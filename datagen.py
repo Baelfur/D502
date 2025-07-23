@@ -37,6 +37,16 @@ REGION_WEIGHTS = {
     "northwest": 0.25
 }
 
+SITE_STATE_MAP = {
+    "DAL": "TX", "AUS": "TX", "OKC": "OK",
+    "ATL": "GA", "CLT": "NC", "PIT": "PA",
+    "SEA": "WA", "LAX": "CA", "SFO": "CA",
+    "MIA": "FL", "JAX": "FL", "BNA": "TN",
+    "PHX": "AZ", "ABQ": "NM", "ELP": "TX",
+    "NYC": "NY", "BOS": "MA", "PHL": "PA",
+    "POR": "OR", "GEG": "WA", "BOI": "ID"
+}
+
 REGION_SITE_MAP = {
     "central":    ["DAL", "AUS", "OKC"],
     "east":       ["ATL", "CLT", "PIT"],
@@ -81,10 +91,11 @@ def weighted_choice(choices):
 
 def generate_hostname(region: str) -> str:
     site_code = random.choice(REGION_SITE_MAP[region])
+    state_code = SITE_STATE_MAP[site_code]
     role_name = random.choice(list(DEVICE_ROLE_CODES.keys()))
     role_code = DEVICE_ROLE_CODES[role_name]
     num = str(random.randint(1, 99)).zfill(2)
-    return f"{site_code}{role_code}{num}"
+    return f"{site_code}{state_code}{role_code}{num}"
 
 def generate_private_ip(region: str) -> str:
     subnet = ipaddress.IPv4Network(REGION_SUBNET_MAP[region])

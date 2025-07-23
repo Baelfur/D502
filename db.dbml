@@ -2,21 +2,22 @@ Table observability {
   asset_id           serial [pk]
   obs_ip_address     text [not null]
   obs_hostname       text [not null]
-  obs_fqdn           text [not null]
-  obs_status         text [not null]
+  obs_fqdn           text [not null] // Pristine 
+  obs_status         text [not null] 
 }
 
 Table inventory {
   inv_ip_address     text [pk]
-  inv_hostname       text
-  inv_vendor         text
-  inv_model          text
+  inv_hostname       text [not null]
+  inv_vendor         text [not null]
+  inv_model          text [not null]
+  inv_role            text [not null]
 }
 
 Table ipam {
   ipam_ip_address    text [pk]
-  ipam_fqdn          text
-  ipam_region        text
+  ipam_fqdn          text [not null]
+  ipam_region        text [not null]
 }
 
 Table labels {
