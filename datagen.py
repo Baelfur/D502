@@ -2,11 +2,13 @@ import random
 import pandas as pd
 from faker import Faker
 
-# Initialize Faker and constants
+# Initialize Faker
 fake = Faker()
 
+# Configuration
 NUM_ASSETS = 10_000
 
+# Weighted vendor-model distribution
 VENDOR_MODEL_WEIGHTED = {
     "Cisco": [("ISR4431", 0.7), ("NCS540", 0.3)],
     "Juniper": [("MX204", 0.9), ("QFX5120", 0.1)],
@@ -16,6 +18,7 @@ VENDOR_MODEL_WEIGHTED = {
     "RAD": [("ETX-2", 1.0)]
 }
 
+# Region weights
 REGION_WEIGHTS = {
     "central": 0.1,
     "east": 0.1,
@@ -26,20 +29,54 @@ REGION_WEIGHTS = {
     "northwest": 0.25
 }
 
-OBS_STATUS_VALUES = ["active", "down", "degraded", "retired"]
+# Region → site code map
+REGION_SITE_MAP = {
+    "central":    ["DAL", "AUS", "OKC"],
+    "east":       ["ATL", "CLT", "PIT"],
+    "west":       ["SEA", "LAX", "SFO"],
+    "southeast":  ["MIA", "JAX", "BNA"],
+    "southwest":  ["PHX", "ABQ", "ELP"],
+    "northeast":  ["NYC", "BOS", "PHL"],
+    "northwest":  ["POR", "GEG", "BOI"]
+}
 
-# Weighted choice utility
+# Device roles → fixed 2-char codes
+DEVICE_ROLE_CODES = {
+    "edge": "ED",
+    "core": "CO",
+    "agg":  "AG",
+    "dist": "DS",
+    "rtr":  "RT",
+    "sw":   "SW"
+}
+
+# Observability status values with weights
+OBS_STATUS_WEIGHTED = [
+    ("active", 0.7),
+    ("degraded", 0.2),
+    ("down", 0.07),
+    ("retired", 0.03)
+]
+
+# Weighted choice helper
 def weighted_choice(choices):
     values, weights = zip(*choices)
     return random.choices(values, weights=weights, k=1)[0]
 
-# Generator for one row
+# Generate hostname with fixed length and uppercase formatting
+def generate_hostname(region: str) -> str:
+    site_code = random.choice(REGION_SITE_MAP[region])
+    role_name = random.choice(list(DEVICE_ROLE_CODES.keys()))
+    role_code = DEVICE_ROLE_CODES[role_name]
+    num = str(random.randint(1, 99)).zfill(2)
+    return f"{site_code}{role_code}{num}"
+
 def generate_asset_row():
-    hostname = fake.hostname().split('.')[0].replace('-', '')
     region = random.choices(list(REGION_WEIGHTS.keys()), weights=REGION_WEIGHTS.values(), k=1)[0]
+    hostname = generate_hostname(region)
     fqdn = f"{hostname}.{region}.lightspeed.net"
     ip_address = fake.ipv4()
-    status = random.choice(OBS_STATUS_VALUES)
+    status = weighted_choice(OBS_STATUS_WEIGHTED)  # uses new weighted distribution
     vendor = random.choice(list(VENDOR_MODEL_WEIGHTED.keys()))
     model = weighted_choice(VENDOR_MODEL_WEIGHTED[vendor])
     
@@ -53,6 +90,8 @@ def generate_asset_row():
         "model": model
     }
 
-# Generate and save to CSV
+# Generate the full dataset
 df = pd.DataFrame(generate_asset_row() for _ in range(NUM_ASSETS))
+
+# Save to file or inspect in memory
 df.to_csv("base_asset_dataset.csv", index=False)
