@@ -1,6 +1,7 @@
 import random
 import pandas as pd
 from faker import Faker
+import ipaddress
 
 # Initialize Faker
 fake = Faker()
@@ -18,7 +19,7 @@ VENDOR_MODEL_WEIGHTED = {
     "RAD": [("ETX-2", 1.0)]
 }
 
-# Region weights
+# Region weights and mappings
 REGION_WEIGHTS = {
     "central": 0.1,
     "east": 0.1,
@@ -29,7 +30,6 @@ REGION_WEIGHTS = {
     "northwest": 0.25
 }
 
-# Region → site code map
 REGION_SITE_MAP = {
     "central":    ["DAL", "AUS", "OKC"],
     "east":       ["ATL", "CLT", "PIT"],
@@ -40,7 +40,16 @@ REGION_SITE_MAP = {
     "northwest":  ["POR", "GEG", "BOI"]
 }
 
-# Device roles → fixed 2-char codes
+REGION_SUBNET_MAP = {
+    "central":    "10.10.0.0/16",
+    "east":       "10.20.0.0/16",
+    "west":       "10.30.0.0/16",
+    "southeast":  "10.40.0.0/16",
+    "southwest":  "10.50.0.0/16",
+    "northeast":  "10.60.0.0/16",
+    "northwest":  "10.70.0.0/16"
+}
+
 DEVICE_ROLE_CODES = {
     "edge": "ED",
     "core": "CO",
@@ -50,7 +59,6 @@ DEVICE_ROLE_CODES = {
     "sw":   "SW"
 }
 
-# Observability status values with weights
 OBS_STATUS_WEIGHTED = [
     ("active", 0.7),
     ("degraded", 0.2),
@@ -58,7 +66,7 @@ OBS_STATUS_WEIGHTED = [
     ("retired", 0.03)
 ]
 
-# Weighted choice helper
+# Weighted choice utility
 def weighted_choice(choices):
     values, weights = zip(*choices)
     return random.choices(values, weights=weights, k=1)[0]
@@ -71,27 +79,41 @@ def generate_hostname(region: str) -> str:
     num = str(random.randint(1, 99)).zfill(2)
     return f"{site_code}{role_code}{num}"
 
-def generate_asset_row():
-    region = random.choices(list(REGION_WEIGHTS.keys()), weights=REGION_WEIGHTS.values(), k=1)[0]
-    hostname = generate_hostname(region)
-    fqdn = f"{hostname}.{region}.lightspeed.net"
-    ip_address = fake.ipv4()
-    status = weighted_choice(OBS_STATUS_WEIGHTED)  # uses new weighted distribution
-    vendor = random.choice(list(VENDOR_MODEL_WEIGHTED.keys()))
-    model = weighted_choice(VENDOR_MODEL_WEIGHTED[vendor])
-    
-    return {
-        "ip_address": ip_address,
-        "hostname": hostname,
-        "fqdn": fqdn,
-        "region": region,
-        "status": status,
-        "vendor": vendor,
-        "model": model
-    }
+# Generate private IP in region-specific subnet
+def generate_private_ip(region: str) -> str:
+    subnet = ipaddress.IPv4Network(REGION_SUBNET_MAP[region])
+    return str(random.choice(list(subnet.hosts())))
 
-# Generate the full dataset
-df = pd.DataFrame(generate_asset_row() for _ in range(NUM_ASSETS))
+seen_ips = set()
+seen_hostnames = set()
 
-# Save to file or inspect in memory
+# Generate a unique asset row
+def generate_unique_asset_row():
+    while True:
+        region = random.choices(list(REGION_WEIGHTS.keys()), weights=REGION_WEIGHTS.values(), k=1)[0]
+        hostname = generate_hostname(region)
+        ip_address = generate_private_ip(region)
+        
+        if hostname in seen_hostnames or ip_address in seen_ips:
+            continue
+
+        seen_hostnames.add(hostname)
+        seen_ips.add(ip_address)
+
+        fqdn = f"{hostname}.{region}.lightspeed.net"
+        status = weighted_choice(OBS_STATUS_WEIGHTED)
+        vendor = random.choice(list(VENDOR_MODEL_WEIGHTED.keys()))
+        model = weighted_choice(VENDOR_MODEL_WEIGHTED[vendor])
+        
+        return {
+            "ip_address": ip_address,
+            "hostname": hostname,
+            "fqdn": fqdn,
+            "region": region,
+            "status": status,
+            "vendor": vendor,
+            "model": model
+        }
+# Generate full dataset
+df = pd.DataFrame(generate_unique_asset_row() for _ in range(NUM_ASSETS))
 df.to_csv("base_asset_dataset.csv", index=False)
