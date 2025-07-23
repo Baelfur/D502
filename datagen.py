@@ -5,7 +5,7 @@ from faker import Faker
 # Initialize Faker and constants
 fake = Faker()
 
-NUM_ASSETS = 10000
+NUM_ASSETS = 10_000
 
 VENDOR_MODEL_WEIGHTED = {
     "Cisco": [("ISR4431", 0.7), ("NCS540", 0.3)],
