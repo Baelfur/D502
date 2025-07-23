@@ -2,8 +2,8 @@ Table observability {
   asset_id           serial [pk]
   obs_ip_address     text [not null]
   obs_hostname       text [not null]
-  obs_status         text
-  -- removed obs_region
+  obs_fqdn           text [not null]
+  obs_status         text [not null]
 }
 
 Table inventory {
@@ -15,6 +15,7 @@ Table inventory {
 
 Table ipam {
   ipam_ip_address    text [pk]
+  ipam_fqdn          text
   ipam_region        text
 }
 
