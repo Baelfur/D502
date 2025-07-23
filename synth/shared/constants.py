@@ -111,20 +111,25 @@ IPAM_REGION_FAILURE_PROBS = {
     "southwest": 0.01
 }
 
-# Inventory presence probability by model
 INVENTORY_MODEL_FAILURE_PROBS = {
+    # EDGE DEVICES (high failure)
+    "ISR4431": 0.50,
+    "SRX345":  0.60,
+    "ETX-2":   0.40,
+    # CORE (low failure)
     "MX204": 0.01,
-    "QFX5120": 0.03,
-    "ISR4431": 0.02,
-    "NCS540": 0.7,
-    "7280R": 0.01,
+    "NCS540": 0.05,
     "7750 SR-1": 0.01,
-    "FSP150": 0.40,
-    "FSP3000": 0.25,
-    "ETX-2": 0.05,
-    "SRX345": 0.10,
-    "7050X3": 0.05,
-    "Catalyst9300": 0.10
+    # AGG
+    "7280R": 0.03,
+    "FSP3000": 0.10,
+    # DIST
+    "FSP150": 0.10,
+    "QFX5120": 0.05,
+    # RTR
+    "7050X3": 0.02,
+    # SW
+    "Catalyst9300": 0.03
 }
 
 # Fallback probabilities
