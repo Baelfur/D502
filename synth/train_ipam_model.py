@@ -8,15 +8,19 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
 
+import matplotlib.pyplot as plt
+import numpy as np
+
+
 # Load enriched data
-df = pd.read_csv("data/labeled_asset_dataset_enriched.csv")
+df = pd.read_csv("data/labeled_asset_dataset.csv")
 
 # Define features and target
 X = df[["region", "status", "vendor", "model", "role"]]
 y = df["present_in_ipam"]
 
 # Encode features
-encoder = OneHotEncoder(sparse=False, handle_unknown="ignore")
+encoder = OneHotEncoder(sparse_output=False, handle_unknown="ignore")
 X_encoded = encoder.fit_transform(X)
 
 # Split train/test
@@ -39,3 +43,26 @@ os.makedirs("models", exist_ok=True)
 joblib.dump(model, "models/ipam_model.pkl")
 joblib.dump(encoder, "models/ipam_encoder.pkl")
 print("✅ IPAM model and encoder saved.")
+
+
+# Create reports directory if needed
+os.makedirs("reports", exist_ok=True)
+
+# Get feature names
+feature_names = encoder.get_feature_names_out(X.columns)
+importances = model.feature_importances_
+indices = np.argsort(importances)[::-1]
+top_n = 20
+
+# Plot
+plt.figure(figsize=(10, 6))
+plt.barh(range(top_n), importances[indices[:top_n]][::-1])
+plt.yticks(range(top_n), feature_names[indices[:top_n]][::-1])
+plt.xlabel("Feature Importance")
+plt.title("Top Feature Importances")
+plt.tight_layout()
+
+# Save to reports/
+output_name = "feature_importance_inventory.png" if "inventory" in __file__ else "feature_importance_ipam.png"
+plt.savefig(f"reports/{output_name}")
+print(f"📊 Feature importance saved to reports/{output_name}")
