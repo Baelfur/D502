@@ -37,31 +37,6 @@ Table lightspeed_asset {
   region         text
   vendor         text
   model          text
-}
-
-// Generated via data cleansing
-Table ipam_training_set {
-  asset_id         int [pk]
-  parsed_region    text
-  site_code        text
-  state_code       text
   missing_in_ipam  boolean
-}
-
-// Generated via data cleansing
-Table inventory_training_set {
-  asset_id             int [pk]
-  vendor               text
-  model                text
-  missing_in_inventory boolean
-}
-
-// Generated via data cleansing
-Table inventory_parsed_training_set {
-  asset_id             int [pk]
-  parsed_region        text
-  parsed_role          text
-  site_code            text
-  state_code           text
   missing_in_inventory boolean
 }

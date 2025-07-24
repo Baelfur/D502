@@ -1,10 +1,14 @@
 ./
     .gitignore
+    clean_and_prepare.py
     db.dbml
     directory_structure.txt
     dir_gen.py
+    generate_data.ps1
+    hydrate_db.py
     README.md
     requirements.txt
+    reset_db.ps1
     archive/
         data/
         synth/
@@ -46,3 +50,5 @@
             feature_importance_ipam_obs.png
         shared/
             constants.py
+        sqlite/
+            d502_assets.db

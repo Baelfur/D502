@@ -1,3 +1,4 @@
+import os
 import random
 import pandas as pd
 from faker import Faker
@@ -26,10 +27,15 @@ logging.basicConfig(
 
 # --- Initialization ---
 fake = Faker()
-NUM_ASSETS = 10_000
+NUM_ASSETS = 11_246
+
+# --- File Path Setup ---
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+os.makedirs(DATA_DIR, exist_ok=True)
+OUTPUT_FILE = os.path.join(DATA_DIR, "base_asset_dataset.csv")
 
 # --- Utilities ---
-
 @lru_cache(maxsize=None)
 def get_region_hosts(region):
     subnet = ipaddress.IPv4Network(REGION_SUBNET_MAP[region])
@@ -95,5 +101,5 @@ df = pd.DataFrame(rows)
 elapsed = time.time() - start_time
 logging.info(f"✅ Completed generation of {NUM_ASSETS} assets in {elapsed:.2f} seconds")
 
-df.to_csv("data/base_asset_dataset.csv", index=False)
-logging.info("📁 Saved to base_asset_dataset.csv")
+df.to_csv(OUTPUT_FILE, index=False)
+logging.info(f"📁 Saved to {OUTPUT_FILE}")

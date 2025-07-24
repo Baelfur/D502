@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 
@@ -8,10 +9,16 @@ from shared.constants import (
     DEFAULT_MODEL_FAILURE_PROB
 )
 
-INPUT_FILE = "data/base_asset_dataset.csv"
-OUTPUT_FILE = "data/labeled_asset_dataset.csv"
+# --- Dynamic path resolution ---
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+INPUT_FILE = os.path.join(DATA_DIR, "base_asset_dataset.csv")
+OUTPUT_FILE = os.path.join(DATA_DIR, "labeled_asset_dataset.csv")
 
-# Load data
+# Ensure output directory exists
+os.makedirs(DATA_DIR, exist_ok=True)
+
+# --- Load data ---
 df = pd.read_csv(INPUT_FILE)
 
 # --- Inject INVENTORY missing flags per model ---
@@ -50,6 +57,6 @@ for region, failure_rate in IPAM_REGION_MISSING_PROBS.items():
         fail_indices = df[idx].sample(n=n_fail, random_state=42).index
         df.loc[fail_indices, "missing_in_ipam"] = 1
 
-# Save the updated dataset
+# --- Save the updated dataset ---
 df.to_csv(OUTPUT_FILE, index=False)
 print(f"✅ Risk-labeled dataset written to: {OUTPUT_FILE}")
