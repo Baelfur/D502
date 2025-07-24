@@ -95,5 +95,5 @@ df = pd.DataFrame(rows)
 elapsed = time.time() - start_time
 logging.info(f"✅ Completed generation of {NUM_ASSETS} assets in {elapsed:.2f} seconds")
 
-df.to_csv("base_asset_dataset.csv", index=False)
+df.to_csv("data/base_asset_dataset.csv", index=False)
 logging.info("📁 Saved to base_asset_dataset.csv")
