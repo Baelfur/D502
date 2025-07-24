@@ -212,3 +212,6 @@ d502/
 
 # ignore archive data files
 archive/data/
+archive/synth/data/
+arcjive/synth/models/
+archive/synth/reports/
