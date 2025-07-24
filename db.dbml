@@ -2,7 +2,7 @@ Table observability {
   obs_asset_id           serial [pk]
   obs_ip_address     text [not null]
   obs_hostname       text [not null]
-  obs_fqdn           text [not null] // Pristine 
+  obs_fqdn           text [not null]
   obs_status         text [not null] 
 }
 
