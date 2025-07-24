@@ -4,8 +4,8 @@ from shared.constants import (
     REGION_SITE_MAP
 )
 
-INPUT_FILE = "labeled_asset_dataset.csv"
-OUTPUT_FILE = "labeled_asset_dataset_enriched.csv"
+INPUT_FILE = "data/labeled_asset_dataset.csv"
+OUTPUT_FILE = "data/labeled_asset_dataset_enriched.csv"
 
 # Reverse role code map: ED → edge
 ROLE_CODE_TO_NAME = {v: k for k, v in DEVICE_ROLE_CODES.items()}
