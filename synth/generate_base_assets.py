@@ -4,6 +4,7 @@ from faker import Faker
 import ipaddress
 import logging
 import time
+from functools import lru_cache
 
 from shared.constants import (
     ROLE_VENDOR_MODEL_MAP,
@@ -29,6 +30,11 @@ NUM_ASSETS = 10_000
 
 # --- Utilities ---
 
+@lru_cache(maxsize=None)
+def get_region_hosts(region):
+    subnet = ipaddress.IPv4Network(REGION_SUBNET_MAP[region])
+    return list(subnet.hosts())
+
 def weighted_choice(choices_dict):
     values, weights = zip(*choices_dict.items())
     return random.choices(values, weights=weights, k=1)[0]
@@ -41,8 +47,7 @@ def generate_hostname(region: str, role: str) -> str:
     return f"{site_code}{state_code}{role_code}{num}"
 
 def generate_private_ip(region: str) -> str:
-    subnet = ipaddress.IPv4Network(REGION_SUBNET_MAP[region])
-    return str(random.choice(list(subnet.hosts())))
+    return str(random.choice(get_region_hosts(region)))
 
 # --- Deduplication State ---
 seen_ips = set()
