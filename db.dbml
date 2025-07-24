@@ -1,3 +1,4 @@
+// Generated on database hydration
 Table observability {
   obs_asset_id           serial [pk]
   obs_ip_address     text [not null]
@@ -6,6 +7,7 @@ Table observability {
   obs_status         text [not null] 
 }
 
+// Generated on database hydration
 Table inventory {
   inv_asset_id      serial [pk]
   inv_ip_address     text [not null]
@@ -14,6 +16,7 @@ Table inventory {
   inv_model          text [not null]
 }
 
+// Generated on database hydration
 Table ipam {
   ipam_asset_id      serial [pk]
   ipam_ip_address    text [pk]
@@ -21,9 +24,44 @@ Table ipam {
   ipam_region        text [not null]
 }
 
-Table labels {
-  asset_id           int [pk]
-  is_observed        boolean
-  is_in_inventory    boolean
-  is_in_ipam         boolean
+// Generated via data cleansing
+Table lightspeed_asset {
+  lightspeed_asset_id int [pk]
+  obs_asset_id       int [ref: > observability.obs_asset_id]
+  inv_asset_id       int [ref: > inventory.inv_asset_id]
+  ipam_asset_id      int [ref: > ipam.ipam_asset_id]
+  ip_address     text [not null]
+  hostname       text [not null]
+  fqdn           text [not null]
+  status         text [not null]
+  region         text
+  vendor         text
+  model          text
+}
+
+// Generated via data cleansing
+Table ipam_training_set {
+  asset_id         int [pk]
+  parsed_region    text
+  site_code        text
+  state_code       text
+  missing_in_ipam  boolean
+}
+
+// Generated via data cleansing
+Table inventory_training_set {
+  asset_id             int [pk]
+  vendor               text
+  model                text
+  missing_in_inventory boolean
+}
+
+// Generated via data cleansing
+Table inventory_parsed_training_set {
+  asset_id             int [pk]
+  parsed_region        text
+  parsed_role          text
+  site_code            text
+  state_code           text
+  missing_in_inventory boolean
 }
