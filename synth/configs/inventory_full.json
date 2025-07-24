@@ -1,0 +1,12 @@
+{
+  "input_file": "data/labeled_asset_dataset_enriched.csv",
+  "target": "present_in_inventory",
+  "features": ["region", "status", "vendor", "model", "role"],
+  "n_estimators": 100,
+  "random_state": 42,
+  "test_size": 0.2,
+  "output_model": "models/inventory_model.pkl",
+  "output_encoder": "models/inventory_encoder.pkl",
+  "output_plot": "reports/feature_importance_inventory.png",
+  "top_n_features": 20
+}

@@ -1,0 +1,12 @@
+{
+  "input_file": "data/labeled_asset_dataset_enriched.csv",
+  "target": "present_in_ipam",
+  "features": ["region", "status", "vendor", "model", "role"],
+  "n_estimators": 100,
+  "random_state": 42,
+  "test_size": 0.2,
+  "output_model": "models/ipam_model.pkl",
+  "output_encoder": "models/ipam_encoder.pkl",
+  "output_plot": "reports/feature_importance_ipam.png",
+  "top_n_features": 20
+}
