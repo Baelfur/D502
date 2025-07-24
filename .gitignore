@@ -209,3 +209,6 @@ __marimo__/
 
 # ignore venv named d502
 d502/
+
+# ignore archive data files
+archive/data/
