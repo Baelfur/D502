@@ -101,7 +101,7 @@ REGION_SUBNET_MAP = {
 }
 
 # IPAM presence probability by region
-IPAM_REGION_FAILURE_PROBS = {
+IPAM_REGION_MISSING_PROBS = {
     "northeast": 0.3,
     "northwest": 0.01,
     "central": 0.01,
@@ -111,7 +111,7 @@ IPAM_REGION_FAILURE_PROBS = {
     "southwest": 0.01
 }
 
-INVENTORY_MODEL_FAILURE_PROBS = {
+INVENTORY_MODEL_MISSING_PROBS = {
     # EDGE DEVICES (high failure)
     "ISR4431": 0.50,
     "SRX345":  0.60,

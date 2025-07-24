@@ -1,6 +1,6 @@
 {
   "input_file": "data/labeled_asset_dataset_enriched.csv",
-  "target": "present_in_inventory",
+  "target": "missing_in_inventory",
   "features": ["region", "status", "vendor", "model", "role"],
   "n_estimators": 100,
   "random_state": 42,

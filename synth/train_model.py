@@ -27,6 +27,7 @@ def train_from_config(config_path: str):
     # Extract features and target
     X = df[config["features"]]
     y = df[config["target"]]
+    target_column = config["target"]
 
     # Encode features
     encoder = OneHotEncoder(sparse_output=False, handle_unknown="ignore")
@@ -64,10 +65,10 @@ def train_from_config(config_path: str):
     top_n = config.get("top_n_features", 20)
 
     plt.figure(figsize=(10, 6))
-    plt.barh(range(top_n), importances[indices[:top_n]][::-1])
+    plt.barh(range(top_n), importances[indices[:top_n]][::-1], color="#e15759")  # red-style for risk
     plt.yticks(range(top_n), feature_names[indices[:top_n]][::-1])
     plt.xlabel("Feature Importance")
-    plt.title("Top Feature Importances")
+    plt.title(f"Top Predictors of {target_column.replace('_', ' ').title()}")
     plt.tight_layout()
     plt.savefig(config["output_plot"])
     print(f"📊 Feature importance plot saved to {config['output_plot']}")

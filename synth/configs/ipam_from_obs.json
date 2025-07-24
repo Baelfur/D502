@@ -1,6 +1,6 @@
 {
   "input_file": "data/labeled_asset_dataset_enriched.csv",
-  "target": "present_in_ipam",
+  "target": "missing_in_ipam",
   "features": ["parsed_region", "parsed_role", "site_code", "state_code"],
   "drop_features": ["region", "status", "role", "vendor", "model"],
   "n_estimators": 100,
