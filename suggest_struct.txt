@@ -1,0 +1,22 @@
+D502/
+├── data/              ← All intermediate CSVs here (including train_data)
+│   ├── base_asset_dataset.csv
+│   ├── labeled_asset_dataset.csv
+│   ├── labeled_asset_dataset_enriched.csv
+│   ├── inventory_training_set.csv
+│   └── ipam_training_set.csv
+├── db/
+│   └── d502_assets.db
+├── models/            ← Output models
+├── reports/           ← PNGs and evaluation metrics
+├── configs/
+│   ├── inventory_full.json
+│   └── ipam_full.json
+├── scripts/
+│   ├── generate_data.py
+│   ├── hydrate_db.py
+│   ├── clean_and_prepare.py
+│   ├── prepare_training_data.py
+│   └── train_all_models.py
+├── constants/
+│   └── constants.py
