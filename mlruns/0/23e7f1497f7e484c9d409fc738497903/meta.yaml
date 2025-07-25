@@ -1,0 +1,15 @@
+artifact_uri: file:///home/baelfur/D502/mlruns/0/23e7f1497f7e484c9d409fc738497903/artifacts
+end_time: 1753431221723
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 23e7f1497f7e484c9d409fc738497903
+run_name: efficient-tern-571
+run_uuid: 23e7f1497f7e484c9d409fc738497903
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1753431219316
+status: 4
+tags: []
+user_id: baelfur

@@ -1,0 +1,10 @@
+name: d502_pipeline
+
+conda_env: conda.yml
+
+entry_points:
+  main:
+    parameters:
+      steps: {type: str, default: "all"}
+    command: >
+      python main.py --steps {steps}

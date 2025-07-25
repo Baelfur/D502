@@ -1,0 +1,15 @@
+artifact_uri: file:///home/baelfur/D502/mlruns/0/20c94ef7953c41d492e9faed29bb5273/artifacts
+end_time: 1753431275666
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 20c94ef7953c41d492e9faed29bb5273
+run_name: crawling-mare-799
+run_uuid: 20c94ef7953c41d492e9faed29bb5273
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1753431272709
+status: 4
+tags: []
+user_id: baelfur

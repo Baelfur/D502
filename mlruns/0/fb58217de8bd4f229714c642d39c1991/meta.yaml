@@ -1,0 +1,15 @@
+artifact_uri: file:///home/baelfur/D502/mlruns/0/fb58217de8bd4f229714c642d39c1991/artifacts
+end_time: 1753431055679
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: fb58217de8bd4f229714c642d39c1991
+run_name: secretive-smelt-941
+run_uuid: fb58217de8bd4f229714c642d39c1991
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1753431053337
+status: 4
+tags: []
+user_id: baelfur

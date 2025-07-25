@@ -1,0 +1,15 @@
+artifact_uri: file:///home/baelfur/D502/mlruns/0/1651032506ea4d9f867869a2af43ca61/artifacts
+end_time: 1753431572030
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 1651032506ea4d9f867869a2af43ca61
+run_name: placid-snail-351
+run_uuid: 1651032506ea4d9f867869a2af43ca61
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1753431569340
+status: 4
+tags: []
+user_id: baelfur

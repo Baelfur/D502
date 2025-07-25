@@ -1,0 +1,15 @@
+name: d502
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pandas
+  - scikit-learn
+  - sqlite
+  - mlflow
+  - ipykernel
+  - pip
+  - pip:
+      - wandb
+      - faker
