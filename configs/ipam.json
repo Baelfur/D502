@@ -1,0 +1,9 @@
+{
+  "name": "ipam_model",
+  "input_file": "train_data/ipam_training_set.csv",
+  "label_column": "ipam_ip_risk_flag",
+  "drop_columns": ["ipam_ip_address"],
+  "output_model": "artifacts/ipam_model.pkl",
+  "output_encoder": "artifacts/ipam_encoder.pkl",
+  "output_plot": "reports/feature_importance_ipam.png"
+}

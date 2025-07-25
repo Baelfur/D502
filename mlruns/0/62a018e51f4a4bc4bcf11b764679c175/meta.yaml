@@ -1,0 +1,15 @@
+artifact_uri: file:///home/baelfur/D502/mlruns/0/62a018e51f4a4bc4bcf11b764679c175/artifacts
+end_time: 1753432176577
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 62a018e51f4a4bc4bcf11b764679c175
+run_name: melodic-grouse-157
+run_uuid: 62a018e51f4a4bc4bcf11b764679c175
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1753432171803
+status: 4
+tags: []
+user_id: baelfur

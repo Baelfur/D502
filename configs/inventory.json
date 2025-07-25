@@ -1,0 +1,9 @@
+{
+  "name": "inventory_model",
+  "input_file": "train_data/inventory_training_set.csv",
+  "label_column": "inv_model_flagged",
+  "drop_columns": ["inv_asset_id", "inv_ip_address", "inv_hostname"],
+  "output_model": "artifacts/inventory_model.pkl",
+  "output_encoder": "artifacts/inventory_encoder.pkl",
+  "output_plot": "reports/feature_importance_inventory.png"
+}

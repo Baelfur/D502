@@ -1,0 +1,15 @@
+artifact_uri: file:///home/baelfur/D502/mlruns/0/d1467eb9ed3f45fe9e04737af3837fb0/artifacts
+end_time: 1753432197470
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: d1467eb9ed3f45fe9e04737af3837fb0
+run_name: incongruous-mule-660
+run_uuid: d1467eb9ed3f45fe9e04737af3837fb0
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1753432193563
+status: 4
+tags: []
+user_id: baelfur

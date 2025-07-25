@@ -1,0 +1,15 @@
+artifact_uri: file:///home/baelfur/D502/mlruns/0/e467c561db3b4e309898623c785ebc73/artifacts
+end_time: 1753431828128
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: e467c561db3b4e309898623c785ebc73
+run_name: honorable-mink-464
+run_uuid: e467c561db3b4e309898623c785ebc73
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1753431825184
+status: 3
+tags: []
+user_id: baelfur

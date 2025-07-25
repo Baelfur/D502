@@ -1,0 +1,15 @@
+artifact_uri: file:///home/baelfur/D502/mlruns/0/3f7bd11783d642c59b6d68f0d44fdfb2/artifacts
+end_time: 1753432253417
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 3f7bd11783d642c59b6d68f0d44fdfb2
+run_name: illustrious-doe-960
+run_uuid: 3f7bd11783d642c59b6d68f0d44fdfb2
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1753432249565
+status: 4
+tags: []
+user_id: baelfur

@@ -1,0 +1,15 @@
+artifact_uri: file:///home/baelfur/D502/mlruns/0/8f68447103c64d6eb89e9b59180084bc/artifacts
+end_time: 1753432301872
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 8f68447103c64d6eb89e9b59180084bc
+run_name: resilient-mule-40
+run_uuid: 8f68447103c64d6eb89e9b59180084bc
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1753432297041
+status: 4
+tags: []
+user_id: baelfur

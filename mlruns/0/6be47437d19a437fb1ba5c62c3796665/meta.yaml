@@ -1,0 +1,15 @@
+artifact_uri: file:///home/baelfur/D502/mlruns/0/6be47437d19a437fb1ba5c62c3796665/artifacts
+end_time: 1753432107831
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 6be47437d19a437fb1ba5c62c3796665
+run_name: receptive-vole-8
+run_uuid: 6be47437d19a437fb1ba5c62c3796665
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1753432104995
+status: 3
+tags: []
+user_id: baelfur
