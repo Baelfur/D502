@@ -1,0 +1,12 @@
+name: d502-generate
+channels:
+  - defaults
+dependencies:
+  - python=3.11
+  - pandas=2.2.2
+  - faker=25.2.0
+  - ipykernel
+  - numpy
+  - pip
+  - pip:
+      - mlflow

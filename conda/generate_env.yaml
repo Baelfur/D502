@@ -1,0 +1,8 @@
+name: d502-generate
+channels:
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+  - pip:
+      - -r ../requirements.txt

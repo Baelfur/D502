@@ -3,16 +3,14 @@ name: d502-pipeline
 entry_points:
   generate:
     parameters:
+      num_assets: {type: int, default: 11246}
       seed: {type: int, default: 42}
-    command: "python src/generate/generate_base_assets.py --seed {seed} && python src/generate/inject_presence_noise.py && python src/generate/hydrate_db.py"
-
-  prepare:
-    command: "python src/prepare/prepare_training_data.py"
-
-  train:
-    parameters:
-      label_type: {type: str, default: 'missing_in_inventory'}
-    command: "python src/train/train_model.py --label_type {label_type}"
-
-  report:
-    command: "python src/report/generate_report.py"
+      raw_dir: {type: str, default: "data/raw"}
+      sqlite_path: {type: str, default: "data/sqlite/d502_assets.db"}
+    command: >
+      python main.py generate
+        --num_assets {num_assets}
+        --seed {seed}
+        --raw_dir {raw_dir}
+        --sqlite_path {sqlite_path}
+    conda_env: conda/generate_env.yaml
