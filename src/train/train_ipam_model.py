@@ -4,6 +4,7 @@ import pandas as pd
 import os
 import logging
 import mlflow
+import joblib
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, accuracy_score
@@ -39,6 +40,14 @@ def train_ipam_model(input_dir: str):
 
     logging.info(f"✅ Accuracy: {acc:.4f}")
 
+    # Save model locally to models/
+    model_dir = "models"
+    os.makedirs(model_dir, exist_ok=True)
+    model_path = os.path.join(model_dir, "ipam_model.pkl")
+    joblib.dump(model, model_path)
+    logging.info(f"💾 Model saved to: {model_path}")
+
+    # Log to MLflow
     with mlflow.start_run(run_name="ipam_model"):
         mlflow.log_metric("accuracy", acc)
         mlflow.sklearn.log_model(model, "model")

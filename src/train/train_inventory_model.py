@@ -4,6 +4,7 @@ import pandas as pd
 import os
 import logging
 import mlflow
+import joblib
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, accuracy_score
@@ -38,6 +39,13 @@ def train_inventory_model(input_dir: str):
     report = classification_report(y_test, preds, output_dict=True)
 
     logging.info(f"✅ Accuracy: {acc:.4f}")
+
+    # Save model locally to models/
+    model_dir = "models"
+    os.makedirs(model_dir, exist_ok=True)
+    model_path = os.path.join(model_dir, "inventory_model.pkl")
+    joblib.dump(model, model_path)
+    logging.info(f"💾 Model saved to: {model_path}")
 
     # MLflow logging
     with mlflow.start_run(run_name="inventory_model"):

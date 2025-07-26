@@ -1,0 +1,10 @@
+artifact_location: file:///C:/Users/baelf/OneDrive/Documents/dev/school/school/D502/mlruns/0/models/m-86c5565e091642108e15d1e1e78c4b90/artifacts
+creation_timestamp: 1753513764344
+experiment_id: '0'
+last_updated_timestamp: 1753513767681
+model_id: m-86c5565e091642108e15d1e1e78c4b90
+model_type: null
+name: model
+source_run_id: bf5416aa00f2411795b89f3246aac31e
+status: 2
+status_message: null

@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/baelf/OneDrive/Documents/dev/school/school/D502/mlruns/0/f1a694c6bb7f40ffacea59d154dca6ba/artifacts
+end_time: 1753513768082
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: f1a694c6bb7f40ffacea59d154dca6ba
+run_name: unruly-snipe-725
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1753513737545
+status: 3
+tags: []
+user_id: baelf

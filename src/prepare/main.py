@@ -1,7 +1,7 @@
-# src/prepare/main.py
-
 import argparse
-from src.prepare.prepare_training_data import prepare_training_sets
+from src.prepare.generate_lightspeed_asset import generate_lightspeed_asset
+from src.prepare.prepare_inventory_training_set import generate_inventory_training_set
+from src.prepare.prepare_ipam_training_set import generate_ipam_training_set
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Prepare training datasets from hydrated SQLite DB")
@@ -21,7 +21,13 @@ def parse_args():
 
 def main():
     args = parse_args()
-    prepare_training_sets(args.sqlite_path, args.output_dir)
+
+    # Step 1: Build lightspeed_asset table
+    generate_lightspeed_asset(sqlite_path=args.sqlite_path)
+
+    # Step 2: Prepare training sets
+    generate_inventory_training_set(sqlite_path=args.sqlite_path, output_dir=args.output_dir)
+    generate_ipam_training_set(sqlite_path=args.sqlite_path, output_dir=args.output_dir)
 
 if __name__ == "__main__":
     main()

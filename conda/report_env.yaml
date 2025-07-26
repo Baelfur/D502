@@ -1,0 +1,15 @@
+name: d502-report
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip
+  - pandas
+  - matplotlib
+  - seaborn
+  - scikit-learn
+  - notebook
+  - pip:
+      - papermill
+      - joblib

@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/baelf/OneDrive/Documents/dev/school/school/D502/mlruns/0/bf5416aa00f2411795b89f3246aac31e/artifacts
+end_time: 1753513767712
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: bf5416aa00f2411795b89f3246aac31e
+run_name: ipam_model
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1753513764274
+status: 3
+tags: []
+user_id: baelf
