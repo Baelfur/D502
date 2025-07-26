@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/baelf/OneDrive/Documents/dev/school/school/D502/mlruns/0/01c87f36e12c4d7b9f1f70f1415d007a/artifacts
+end_time: 1753506908936
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 01c87f36e12c4d7b9f1f70f1415d007a
+run_name: efficient-sheep-840
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1753506908012
+status: 3
+tags: []
+user_id: baelf
