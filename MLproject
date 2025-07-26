@@ -1,0 +1,18 @@
+name: d502-pipeline
+
+entry_points:
+  generate:
+    parameters:
+      seed: {type: int, default: 42}
+    command: "python src/generate/generate_base_assets.py --seed {seed} && python src/generate/inject_presence_noise.py && python src/generate/hydrate_db.py"
+
+  prepare:
+    command: "python src/prepare/prepare_training_data.py"
+
+  train:
+    parameters:
+      label_type: {type: str, default: 'missing_in_inventory'}
+    command: "python src/train/train_model.py --label_type {label_type}"
+
+  report:
+    command: "python src/report/generate_report.py"

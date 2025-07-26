@@ -1,62 +1,87 @@
 import os
 import pandas as pd
 import numpy as np
+import argparse
+import logging
 
-from shared.constants import (
+from src.shared.constants import (
     ROLE_VENDOR_MODEL_MAP,
     INVENTORY_MODEL_MISSING_PROBS,
     IPAM_REGION_MISSING_PROBS,
     DEFAULT_MODEL_FAILURE_PROB
 )
 
-# --- Dynamic path resolution ---
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(BASE_DIR, "data")
-INPUT_FILE = os.path.join(DATA_DIR, "base_asset_dataset.csv")
-OUTPUT_FILE = os.path.join(DATA_DIR, "labeled_asset_dataset.csv")
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    datefmt='%H:%M:%S'
+)
 
-# Ensure output directory exists
-os.makedirs(DATA_DIR, exist_ok=True)
 
-# --- Load data ---
-df = pd.read_csv(INPUT_FILE)
+def inject_noise(input_path: str, output_path: str, seed: int = 42):
+    logging.info("🔄 Loading base dataset...")
+    df = pd.read_csv(input_path)
 
-# --- Inject INVENTORY missing flags per model ---
-df["missing_in_inventory"] = 0  # start with everything present
+    # --- Inventory Presence Flags ---
+    df["missing_in_inventory"] = 0
 
-for model, failure_rate in INVENTORY_MODEL_MISSING_PROBS.items():
-    idx = df["model"] == model
-    n = idx.sum()
-    n_fail = int(n * failure_rate)
-    
-    if n_fail > 0:
-        fail_indices = df[idx].sample(n=n_fail, random_state=42).index
-        df.loc[fail_indices, "missing_in_inventory"] = 1
-
-# Ensure all models from ROLE_VENDOR_MODEL_MAP are represented
-reference_models = set(model for models in ROLE_VENDOR_MODEL_MAP.values() for _, model in models)
-for model in reference_models:
-    if model not in INVENTORY_MODEL_MISSING_PROBS:
-        print(f"⚠️ WARNING: Model {model} missing from INVENTORY_MODEL_FAILURE_PROBS. Using default {DEFAULT_MODEL_FAILURE_PROB}.")
+    for model, failure_rate in INVENTORY_MODEL_MISSING_PROBS.items():
         idx = df["model"] == model
         n = idx.sum()
-        n_fail = int(n * DEFAULT_MODEL_FAILURE_PROB)
+        n_fail = int(n * failure_rate)
+
         if n_fail > 0:
-            fail_indices = df[idx].sample(n=n_fail, random_state=42).index
+            fail_indices = df[idx].sample(n=n_fail, random_state=seed).index
             df.loc[fail_indices, "missing_in_inventory"] = 1
 
-# --- Inject IPAM missing flags per region ---
-df["missing_in_ipam"] = 0  # start with everything present
+    # Fallback for unlisted models
+    reference_models = set(model for models in ROLE_VENDOR_MODEL_MAP.values() for _, model in models)
+    for model in reference_models:
+        if model not in INVENTORY_MODEL_MISSING_PROBS:
+            logging.warning(f"⚠️ Model {model} not in INVENTORY_MODEL_MISSING_PROBS — using default {DEFAULT_MODEL_FAILURE_PROB}")
+            idx = df["model"] == model
+            n = idx.sum()
+            n_fail = int(n * DEFAULT_MODEL_FAILURE_PROB)
+            if n_fail > 0:
+                fail_indices = df[idx].sample(n=n_fail, random_state=seed).index
+                df.loc[fail_indices, "missing_in_inventory"] = 1
 
-for region, failure_rate in IPAM_REGION_MISSING_PROBS.items():
-    idx = df["region"] == region
-    n = idx.sum()
-    n_fail = int(n * failure_rate)
+    # --- IPAM Presence Flags ---
+    df["missing_in_ipam"] = 0
 
-    if n_fail > 0:
-        fail_indices = df[idx].sample(n=n_fail, random_state=42).index
-        df.loc[fail_indices, "missing_in_ipam"] = 1
+    for region, failure_rate in IPAM_REGION_MISSING_PROBS.items():
+        idx = df["region"] == region
+        n = idx.sum()
+        n_fail = int(n * failure_rate)
 
-# --- Save the updated dataset ---
-df.to_csv(OUTPUT_FILE, index=False)
-print(f"✅ Risk-labeled dataset written to: {OUTPUT_FILE}")
+        if n_fail > 0:
+            fail_indices = df[idx].sample(n=n_fail, random_state=seed).index
+            df.loc[fail_indices, "missing_in_ipam"] = 1
+
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    df.to_csv(output_path, index=False)
+    logging.info(f"✅ Labeled dataset saved to: {output_path}")
+    logging.info(f"🧮 Final shape: {df.shape}")
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Inject missing labels into asset dataset")
+    parser.add_argument(
+        "--input", type=str, default="data/raw/base_asset_dataset.csv",
+        help="Path to base asset CSV file"
+    )
+    parser.add_argument(
+        "--output", type=str, default="data/raw/labeled_asset_dataset.csv",
+        help="Path to output labeled dataset"
+    )
+    parser.add_argument(
+        "--seed", type=int, default=42,
+        help="Random seed for reproducibility"
+    )
+    args = parser.parse_args()
+
+    inject_noise(args.input, args.output, args.seed)
+
+
+if __name__ == "__main__":
+    main()

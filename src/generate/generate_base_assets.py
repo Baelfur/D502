@@ -6,8 +6,9 @@ import ipaddress
 import logging
 import time
 from functools import lru_cache
+import argparse
 
-from shared.constants import (
+from src.shared.constants import (
     ROLE_VENDOR_MODEL_MAP,
     DEVICE_ROLE_CODES,
     REGION_WEIGHTS,
@@ -25,15 +26,8 @@ logging.basicConfig(
     datefmt='%H:%M:%S'
 )
 
-# --- Initialization ---
 fake = Faker()
-NUM_ASSETS = 11_246
 
-# --- File Path Setup ---
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(BASE_DIR, "data")
-os.makedirs(DATA_DIR, exist_ok=True)
-OUTPUT_FILE = os.path.join(DATA_DIR, "base_asset_dataset.csv")
 
 # --- Utilities ---
 @lru_cache(maxsize=None)
@@ -55,51 +49,77 @@ def generate_hostname(region: str, role: str) -> str:
 def generate_private_ip(region: str) -> str:
     return str(random.choice(get_region_hosts(region)))
 
-# --- Deduplication State ---
-seen_ips = set()
-seen_hostnames = set()
 
-def generate_unique_asset_row():
-    while True:
-        region = weighted_choice(REGION_WEIGHTS)
-        role = weighted_choice(ROLE_WEIGHTS)
-        hostname = generate_hostname(region, role)
-        ip_address = generate_private_ip(region)
+# --- Core Function ---
+def generate_assets(num_assets: int, output_file: str):
+    seen_ips = set()
+    seen_hostnames = set()
 
-        if hostname in seen_hostnames or ip_address in seen_ips:
-            continue
+    def generate_unique_asset_row():
+        while True:
+            region = weighted_choice(REGION_WEIGHTS)
+            role = weighted_choice(ROLE_WEIGHTS)
+            hostname = generate_hostname(region, role)
+            ip_address = generate_private_ip(region)
 
-        seen_hostnames.add(hostname)
-        seen_ips.add(ip_address)
+            if hostname in seen_hostnames or ip_address in seen_ips:
+                continue
 
-        fqdn = f"{hostname}.{region}.lightspeed.net"
-        status = weighted_choice(dict(OBS_STATUS_WEIGHTED))
-        vendor, model = random.choice(ROLE_VENDOR_MODEL_MAP[role])
+            seen_hostnames.add(hostname)
+            seen_ips.add(ip_address)
 
-        return {
-            "ip_address": ip_address,
-            "hostname": hostname,
-            "fqdn": fqdn,
-            "region": region,
-            "status": status,
-            "vendor": vendor,
-            "model": model,
-            "role": role
-        }
+            fqdn = f"{hostname}.{region}.lightspeed.net"
+            status = weighted_choice(dict(OBS_STATUS_WEIGHTED))
+            vendor, model = random.choice(ROLE_VENDOR_MODEL_MAP[role])
 
-# --- Data Generation ---
-start_time = time.time()
+            return {
+                "ip_address": ip_address,
+                "hostname": hostname,
+                "fqdn": fqdn,
+                "region": region,
+                "status": status,
+                "vendor": vendor,
+                "model": model,
+                "role": role
+            }
 
-rows = []
-for i in range(NUM_ASSETS):
-    rows.append(generate_unique_asset_row())
-    if (i + 1) % 1000 == 0:
-        logging.info(f"{i + 1} assets generated...")
+    start_time = time.time()
 
-df = pd.DataFrame(rows)
+    rows = []
+    for i in range(num_assets):
+        rows.append(generate_unique_asset_row())
+        if (i + 1) % 1000 == 0:
+            logging.info(f"{i + 1} assets generated...")
 
-elapsed = time.time() - start_time
-logging.info(f"✅ Completed generation of {NUM_ASSETS} assets in {elapsed:.2f} seconds")
+    df = pd.DataFrame(rows)
+    df.to_csv(output_file, index=False)
 
-df.to_csv(OUTPUT_FILE, index=False)
-logging.info(f"📁 Saved to {OUTPUT_FILE}")
+    elapsed = time.time() - start_time
+    logging.info(f"✅ Generated {num_assets} assets in {elapsed:.2f}s")
+    logging.info(f"📁 Output saved to: {output_file}")
+    logging.info(f"🧮 Dataset shape: {df.shape}")
+
+
+# --- Entry Point ---
+def main():
+    parser = argparse.ArgumentParser(description="Generate synthetic asset dataset")
+    parser.add_argument(
+        "--num_assets",
+        type=int,
+        default=11246,
+        help="Number of assets to generate"
+    )
+    parser.add_argument(
+        "--output",
+        type=str,
+        default="data/raw/base_asset_dataset.csv",
+        help="Path to output CSV file"
+    )
+    args = parser.parse_args()
+
+    os.makedirs(os.path.dirname(args.output), exist_ok=True)
+    generate_assets(args.num_assets, args.output)
+
+
+if __name__ == "__main__":
+    main()
